@@ -3,12 +3,12 @@ from .views import *
 
 
 urlpatterns = [
-    # path('register/', RegisterView.as_view(), name='register'),
-    # path('login/', CustomLoginView.as_view(), name='login'),
-    # path('logout/', LogoutView.as_view(), name='logout'),
+    path('register/', RegisterView.as_view(), name='register'),
+    path('login/', CustomLoginView.as_view(), name='login'),
+    path('logout/', LogoutView.as_view(), name='logout'),
 
-    path('', CarViewSet.as_view({'get': 'list', 'post': 'create'}), name='car_list'),
-    path('<int:pk>/', CarViewSet.as_view({'get': 'retrieve',
+    path('', CarListViewSet.as_view({'get': 'list', 'post': 'create'}), name='car_list'),
+    path('<int:pk>/', CarDetailViewSet.as_view({'get': 'retrieve',
                                           'put': 'update',
                                           'delete': 'destroy'}), name='car_detail'),
 

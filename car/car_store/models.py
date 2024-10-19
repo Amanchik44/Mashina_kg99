@@ -1,19 +1,19 @@
 
-from django.contrib.auth.models import User
+from django.contrib.auth.models import AbstractUser
 from django.db import models
 from phonenumber_field.modelfields import PhoneNumberField
 from django.core.validators import MinValueValidator,MaxValueValidator
 
 
-class UserProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+class UserProfile(AbstractUser):
+    nikname = models.CharField(max_length=50)
     country = models.CharField(max_length=100)
     age = models.PositiveIntegerField(default=0, null=True, blank=True,
                                       validators=[MinValueValidator(0),MaxValueValidator(100)])
     phone_number = PhoneNumberField(null=True,blank=True,region='KG')
 
     def str(self):
-        return f'{self.user}'
+        return f'{self.nikname}'
 
 
 class Category(models.Model):
@@ -63,6 +63,8 @@ class Car(models.Model):
         ("Бензин", "Бензин"),
         ("Газ", "Газ"),
         ("Дизель", "Дизель"),
+        ("Электро","Электро"),
+        ("Гибрид","Гибрид"),
     )
     engine = models.CharField(max_length=16, choices=CHOICES_ENGINE)
     volume = models.FloatField(default=0.8)
@@ -78,10 +80,9 @@ class Car(models.Model):
 
 
 class Comment(models.Model):
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    author = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
     text = models.TextField()
     car = models.ForeignKey(Car, on_delete=models.CASCADE)
-    parent_review = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE)
     created_date = models.DateTimeField(auto_now_add=True)
 
     def str(self):
@@ -98,10 +99,10 @@ class Favorite(models.Model):
 
 class FavoriteCar(models.Model):
     cart = models.ForeignKey(Favorite,on_delete=models.CASCADE,)
-    movie = models.ForeignKey(Car,on_delete=models.CASCADE)
+    car = models.ForeignKey(Car,on_delete=models.CASCADE)
 
     def __str__(self):
-        return f'{self.cart}-{self.movie}'
+        return f'{self.cart}-{self.car}'
 
 
 class CarPhotos(models.Model):
